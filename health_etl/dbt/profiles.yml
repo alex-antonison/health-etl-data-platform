@@ -1,0 +1,10 @@
+health_etl:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../duckdb-database/health_etl.duckdb
+      extensions:
+        - parquet
+        - httpfs
+      threads: 4

@@ -39,9 +39,11 @@ class RangeAppResult(AppResult):
 * **Value** The Data Platform architecture needs to be cost effective in order to ensure the cost does not outweigh the ROI of the downstream data products.
 * **Governance** The Data Platform needs to securely ingest and manage sensitive patient data.
 
-### Source Control and Continuous Integration/Continuous Deployment
+### Source Control, Continuous Integration/Continuous Deployment, and code quality
 
-GitHub will be used for source control and GitHub Actions for Continuous Integration/Continuous Deployment.
+* GitHub will be used for source control.
+* GitHub Actions for Continuous Integration/Continuous Deployment.
+* pre-commit will be used to perform tasks such as linting and formatting on each commit.
 
 ### Documentation Strategy
 
