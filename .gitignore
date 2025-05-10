@@ -3,8 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+*.db
+
 # C extensions
 *.so
+
+*.tmp*/
 
 # Distribution / packaging
 .Python
@@ -172,3 +176,4 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+.python-version

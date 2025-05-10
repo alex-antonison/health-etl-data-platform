@@ -1,0 +1,58 @@
+version: 2
+
+sources:
+  - name: app_results
+    schema: main
+    tables:
+      - name: integer_app_results
+        description: "Integer app results from the application"
+        columns:
+          - name: app_result_id
+            description: "Unique identifier for the app result"
+            tests:
+              - unique
+              - not_null
+          - name: content_slug
+            description: "Slug identifying the content"
+          - name: created_time
+            description: "When the record was created"
+          - name: modified_time
+            description: "When the record was last modified"
+          - name: value
+            description: "The integer value of the result"
+
+      - name: datetime_app_results
+        description: "Datetime app results from the application"
+        columns:
+          - name: app_result_id
+            description: "Unique identifier for the app result"
+            tests:
+              - unique
+              - not_null
+          - name: content_slug
+            description: "Slug identifying the content"
+          - name: created_time
+            description: "When the record was created"
+          - name: modified_time
+            description: "When the record was last modified"
+          - name: value
+            description: "The datetime value of the result"
+
+      - name: range_app_results
+        description: "Range app results from the application"
+        columns:
+          - name: app_result_id
+            description: "Unique identifier for the app result"
+            tests:
+              - unique
+              - not_null
+          - name: content_slug
+            description: "Slug identifying the content"
+          - name: created_time
+            description: "When the record was created"
+          - name: modified_time
+            description: "When the record was last modified"
+          - name: from_value
+            description: "The start value of the range"
+          - name: to_value
+            description: "The end value of the range"
