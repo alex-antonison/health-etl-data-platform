@@ -77,19 +77,12 @@ def raw_app_results(duckdb: DuckDBResource):
     load_info = pipeline.run(
         dlt.resource(
             f"postgresql://{POSTGRES_CONNECTION['user']}:{POSTGRES_CONNECTION['password']}@{POSTGRES_CONNECTION['host']}:{POSTGRES_CONNECTION['port']}/{POSTGRES_CONNECTION['database']}",
-            query=f"""
-                SELECT ar.*, 
-                       CASE 
-                           WHEN ar.polymorphic_type = 'IntegerAppResult' THEN iar.value
-                           WHEN ar.polymorphic_type = 'DateTimeAppResult' THEN dar.value
-                           WHEN ar.polymorphic_type = 'RangeAppResult' THEN rar.from_value || '-' || rar.to_value
-                       END as metric_value
-                FROM app_results ar
-                LEFT JOIN integer_app_results iar ON ar.id = iar.app_result_id
-                LEFT JOIN datetime_app_results dar ON ar.id = dar.app_result_id
-                LEFT JOIN range_app_results rar ON ar.id = rar.app_result_id
-                WHERE ar.modified_time > '{last_modified}'
-            """,
+            table="app_results",
+            schema="public",
+            incremental=dlt.sources.incremental(
+                "modified_time",
+                initial_value=last_modified,
+            ),
         ),
         table_name="app_results",
         write_disposition="merge",
@@ -127,12 +120,12 @@ def raw_integer_app_results(duckdb: DuckDBResource):
     load_info = pipeline.run(
         dlt.resource(
             f"postgresql://{POSTGRES_CONNECTION['user']}:{POSTGRES_CONNECTION['password']}@{POSTGRES_CONNECTION['host']}:{POSTGRES_CONNECTION['port']}/{POSTGRES_CONNECTION['database']}",
-            query=f"""
-                SELECT iar.*
-                FROM integer_app_results iar
-                JOIN app_results ar ON ar.id = iar.app_result_id
-                WHERE ar.modified_time > '{last_modified}'
-            """,
+            table="integer_app_results",
+            schema="public",
+            incremental=dlt.sources.incremental(
+                "modified_time",
+                initial_value=last_modified,
+            ),
         ),
         table_name="integer_app_results",
         write_disposition="merge",
@@ -172,12 +165,12 @@ def raw_datetime_app_results(duckdb: DuckDBResource):
     load_info = pipeline.run(
         dlt.resource(
             f"postgresql://{POSTGRES_CONNECTION['user']}:{POSTGRES_CONNECTION['password']}@{POSTGRES_CONNECTION['host']}:{POSTGRES_CONNECTION['port']}/{POSTGRES_CONNECTION['database']}",
-            query=f"""
-                SELECT dar.*
-                FROM datetime_app_results dar
-                JOIN app_results ar ON ar.id = dar.app_result_id
-                WHERE ar.modified_time > '{last_modified}'
-            """,
+            table="datetime_app_results",
+            schema="public",
+            incremental=dlt.sources.incremental(
+                "modified_time",
+                initial_value=last_modified,
+            ),
         ),
         table_name="datetime_app_results",
         write_disposition="merge",
@@ -217,12 +210,12 @@ def raw_range_app_results(duckdb: DuckDBResource):
     load_info = pipeline.run(
         dlt.resource(
             f"postgresql://{POSTGRES_CONNECTION['user']}:{POSTGRES_CONNECTION['password']}@{POSTGRES_CONNECTION['host']}:{POSTGRES_CONNECTION['port']}/{POSTGRES_CONNECTION['database']}",
-            query=f"""
-                SELECT rar.*
-                FROM range_app_results rar
-                JOIN app_results ar ON ar.id = rar.app_result_id
-                WHERE ar.modified_time > '{last_modified}'
-            """,
+            table="range_app_results",
+            schema="public",
+            incremental=dlt.sources.incremental(
+                "modified_time",
+                initial_value=last_modified,
+            ),
         ),
         table_name="range_app_results",
         write_disposition="merge",
