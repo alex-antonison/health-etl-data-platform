@@ -45,22 +45,18 @@ def integer_app_results(duckdb: DuckDBResource):
     # Get the last modified time from the destination
     last_modified = get_last_modified_time(pipeline, "integer_app_results")
 
+    # Create PostgreSQL connection string
+    connection_string = f"postgresql://{POSTGRES_CONNECTION['user']}:{POSTGRES_CONNECTION['password']}@{POSTGRES_CONNECTION['host']}:{POSTGRES_CONNECTION['port']}/{POSTGRES_CONNECTION['database']}"
+
     # Load data from PostgreSQL with incremental query
     load_info = pipeline.run(
         dlt.resource(
-            f"postgresql://{POSTGRES_CONNECTION['user']}:{POSTGRES_CONNECTION['password']}@{POSTGRES_CONNECTION['host']}:{POSTGRES_CONNECTION['port']}/{POSTGRES_CONNECTION['database']}",
-            query=f"""
-                SELECT 	
-                    iar.app_result_id,
-                    ar.content_slug,
-                    ar.created_time,
-                    ar.modified_time,
-                    iar.value
-                FROM public.integer_app_results iar
-                JOIN public.app_results ar ON ar.id = iar.app_result_id
-                WHERE ar.polymorphic_type = 'IntegerAppResult'
-                AND ar.modified_time > '{last_modified}'
-            """,
+            connection_string,
+            table="integer_app_results",
+            schema="public",
+            incremental=dlt.sources.incremental(
+                "modified_time", initial_value=last_modified
+            ),
         ),
         table_name="integer_app_results",
         write_disposition="merge",
