@@ -119,12 +119,13 @@ With the use case to only ingest data once per day and supporting schema evoluti
 
 ### Data Governance
 
-To ensure only the appropriate people have access to the data to help our patients, we have defined the following roles:
+To ensure only the appropriate people have access to the data to help our patients, we have defined the following roles and detailed what roles have access to what data.
 
-|role|access|
-|-|-|
-|Software Developers|Access to development environments data only. No access to production PHI.|
-|Data Engineers|Full access to data pipelines and infrastructure. Limited access to PHI for debugging purposes only.|
-|Data Analysts|Read-only access to de-identified data for analysis. No direct access to PHI.|
-|3rd parties responsible for extracting data from hospital EHRs|Data API Access will be provided managed via |
-|Data scientists and ML engineers|Access to de-identified datasets for model development. No direct access to PHI.|
+|Role|Access Description|PHI Access|
+|-|-|-|
+|Software Developers|Access to development environment data only.|False|
+|Data Engineers|Full access to data pipelines and infrastructure.|Limited for debugging|
+|Data Analysts|Read-only access to de-identified data for analysis.|False|
+|Data Scientists|Read-only access to de-identified data for for model development.|False|
+|Machine Learning Engineers|Read-only access to de-identified data for for model development.|False|
+|3rd parties responsible for extracting data from hospital EHRs|Data API Access will be provided managed via OAuth Keys. Row Level Security via Snowflake Row Access Policies will be implemented to ensure only applicable data is made available via external facing datasets.|True|
