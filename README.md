@@ -4,6 +4,20 @@ At HealthETL, we are focused around efficiently and securely ingesting client he
 
 ## Overview
 
+### Project Setup
+
+So simulate data, I first spin up a postgres database via docker in the [app-database](./app-database/) directory. With docker running, all you need to do is run:
+
+```bash
+docker-compose up -d
+```
+
+Once the database is running, you can then go into the [data-producer](./data-producer/) and run the [wearable_data_producer.py](./data-producer/wearable_data_producer.py) script. This will run periodically and both add and update some data using the Faker python package.
+
+Once that is up and going, you can then go into the [health_etl](./health_etl/) directory and run the [incremental_load.py](./health_etl/incremental_load.py) to incrementally load data from the postgres database into DuckDB.
+
+From there, you can go into the [dbt](./health_etl/dbt/) directory to run commands like `dbt build` to run and test the models.
+
 ### Source Data
 
 While the following is our current application model, we are committed to meeting our patients where they are at so as our patient's needs evolve, so will our application!

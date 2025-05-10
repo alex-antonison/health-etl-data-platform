@@ -14,7 +14,7 @@ POSTGRES_CONNECTION = {
 }
 
 
-def get_last_modified_time(duckdb_conn, table_name: str) -> datetime:
+def get_last_modified_time(duckdb_conn, table_name):
     """Get the last modified time from the DuckDB destination"""
     try:
         result = duckdb_conn.execute(f"""
