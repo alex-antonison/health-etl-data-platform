@@ -34,16 +34,28 @@ range_app_results AS (
 )
 
 SELECT
-    *
+    app_result_id,
+    content_slug,
+    created_time,
+    modified_time,
+    value
 FROM date_time_app_data
 WHERE record_rank = 1
 UNION ALL
 SELECT
-    *
+    app_result_id,
+    content_slug,
+    created_time,
+    modified_time,
+    value
 FROM integer_app_data
 WHERE record_rank = 1
 UNION ALL
 SELECT
-    *
+    app_result_id,
+    content_slug,
+    created_time,
+    modified_time,
+    value
 FROM range_app_results
 WHERE record_rank = 1
