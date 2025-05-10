@@ -16,7 +16,7 @@ Once the database is running, you can then go into the [data-producer](./data-pr
 
 Once that is up and going, you can then go into the [health_etl](./health_etl/) directory and run the [incremental_load.py](./health_etl/incremental_load.py) to incrementally load data from the postgres database into DuckDB.
 
-From there, you can go into the [dbt](./health_etl/dbt/) directory to run commands like `dbt build` to run and test the models.
+From there, you can go into the [dbt](./health_etl/dbt/) directory to run commands like `dbt build` to run and test the models. First you will need to run `dbt deps` to install the `dbt_utils` package.
 
 ### Source Data
 
