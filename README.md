@@ -114,13 +114,13 @@ The HealthETL Data Platform needs to have the ability to extract new or updated 
 
 #### Managed Services
 
-1. *AWS Database Migration Service* This is a fully managed AWS service that allows for migrating data from a source database to a target location, whether that is a database or S3. Being that the timeliness requirement is only once every 24 hours, this solution would not make sense. However, if down the road there is a desire to ingest data more frequently, this could be an option.
-2. *Fivetran* Fivetran is the most fully featured Extract-Load vendor in the space providing a streamlined user experience moving data between source-to-target. However, it is also the most expensive. Being that the given use case is from an internal application and not complicated, Fivetran is perhaps not the best option
+1. **AWS Database Migration Service** This is a fully managed AWS service that allows for migrating data from a source database to a target location, whether that is a database or S3. Being that the timeliness requirement is only once every 24 hours, this solution would not make sense. However, if down the road there is a desire to ingest data more frequently, this could be an option.
+2. **Fivetran** Fivetran is the most fully featured Extract-Load vendor in the space providing a streamlined user experience moving data between source-to-target. However, it is also the most expensive. Being that the given use case is from an internal application and not complicated, Fivetran is perhaps not the best option
 
 #### Open Source
 
-1. *Airbyte* Airbyte is a great open source option for Extract-Load as it supports a wide variety of sources and destinations. However, it is not python-centric and requires hosting it as a separate service.
-2. *data-load-tool (dlt)* dltHub is another great open source option for Extract-Load and while it is less featured than Airbyte, being that it is a python package it is easier to integrate into existing python data pipelines.
+1. **Airbyte** is a great open source option for Extract-Load as it supports a wide variety of sources and destinations. However, it is not python-centric and requires hosting it as a separate service.
+2. **data-load-tool (dltHub)** is another great open source option for Extract-Load and while it is less featured than Airbyte, being that it is a python package it is easier to integrate into existing python data pipelines.
 
 #### Extract Load Data Conclusion
 
@@ -128,10 +128,10 @@ With the use case to only ingest data once per day and supporting schema evoluti
 
 ### Tech Stack
 
-* *Transformation* [dbt](https://www.getdbt.com/)
-* *Orchestration* [Dagster](https://dagster.io)
-* *Cloud Data Warehouse* [Snowflake](https://www.snowflake.com/) (but really [DuckDB](https://duckdb.org/))
-* *Extract Load* [dltHub](https://dlthub.com/)
+* **Transformation** [dbt](https://www.getdbt.com/)
+* **Orchestration** [Dagster](https://dagster.io)
+* **Cloud Data Warehouse** [Snowflake](https://www.snowflake.com/) (but really [DuckDB](https://duckdb.org/))
+* **Extract Load** [dltHub](https://dlthub.com/)
 
 ### Data Governance
 
