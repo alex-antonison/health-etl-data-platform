@@ -1,0 +1,30 @@
+version: 2
+
+models:
+  - name: stg_user_activity
+    description: Staging model that combines user activity data from different app result types (datetime, integer, and range)
+    columns:
+      - name: app_result_id
+        description: 
+        tests:
+          - not_null
+
+      - name: content_slug
+        description: Identifier for activity type
+        tests:
+          - not_null
+
+      - name: created_time
+        description: When the value was created
+        tests:
+          - not_null
+
+      - name: modified_time
+        description: When the value was last modified
+        tests:
+          - not_null
+
+      - name: value
+        description: This column represents either a datetime, integer, or range value
+        tests:
+          - not_null
