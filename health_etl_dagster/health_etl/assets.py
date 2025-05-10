@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any
 
 import dlt
-from dagster import AssetIn, asset
+from dagster import AssetIn, asset, MaterializeResult, Output
 from dagster_duckdb import DuckDBResource
 from dlt.sources.helpers import requests
 from dlt.common.runtime.slack import send_slack_message
@@ -155,7 +155,14 @@ def raw_app_results():
     # Notify about schema changes
     notify_schema_changes(load_info)
 
-    return load_info
+    # Return materialization result
+    return MaterializeResult(
+        metadata={
+            "rows_loaded": load_info.load_packages[0].row_counts.get("app_results", 0),
+            "last_modified": last_modified.isoformat(),
+            "schema_updates": str(load_info.load_packages[0].schema_update),
+        }
+    )
 
 
 @asset(
@@ -184,7 +191,16 @@ def raw_integer_app_results():
     # Notify about schema changes
     notify_schema_changes(load_info)
 
-    return load_info
+    # Return materialization result
+    return MaterializeResult(
+        metadata={
+            "rows_loaded": load_info.load_packages[0].row_counts.get(
+                "integer_app_results", 0
+            ),
+            "last_modified": last_modified.isoformat(),
+            "schema_updates": str(load_info.load_packages[0].schema_update),
+        }
+    )
 
 
 @asset(
@@ -213,7 +229,16 @@ def raw_datetime_app_results():
     # Notify about schema changes
     notify_schema_changes(load_info)
 
-    return load_info
+    # Return materialization result
+    return MaterializeResult(
+        metadata={
+            "rows_loaded": load_info.load_packages[0].row_counts.get(
+                "datetime_app_results", 0
+            ),
+            "last_modified": last_modified.isoformat(),
+            "schema_updates": str(load_info.load_packages[0].schema_update),
+        }
+    )
 
 
 @asset(
@@ -242,4 +267,13 @@ def raw_range_app_results():
     # Notify about schema changes
     notify_schema_changes(load_info)
 
-    return load_info
+    # Return materialization result
+    return MaterializeResult(
+        metadata={
+            "rows_loaded": load_info.load_packages[0].row_counts.get(
+                "range_app_results", 0
+            ),
+            "last_modified": last_modified.isoformat(),
+            "schema_updates": str(load_info.load_packages[0].schema_update),
+        }
+    )
