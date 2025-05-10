@@ -32,13 +32,16 @@ class RangeAppResult(AppResult):
 
 ### Data Platform Needs
 
-* *Velocity* The Data Platform needs to be updated daily.
-* *Variety* The Data Platform needs to be able to handle changes to the application database schema (aka schema evolution).
-* *Volume* The Data Platform needs to be able to handle processing large volumes of data.
-* *Veracity* The Data Platform needs to test source data to ensure only high quality results are served via data products.
-* *Value* The Data Platform architecture needs to be cost effective in order to ensure the cost does not outweigh the ROI of the downstream data products.
-* *Governance* The Data Platform needs to securely ingest and manage sensitive patient data.
-* *Platform Maintainability* GitHub will be used for source control and GitHub Actions for Continuous Integration/Continuous Deployment.
+* **Velocity** The Data Platform needs to be updated daily.
+* **Variety** The Data Platform needs to be able to handle changes to the application database schema (aka schema evolution).
+* **Volume** The Data Platform needs to be able to handle processing large volumes of data.
+* **Veracity** The Data Platform needs to test source data to ensure only high quality results are served via data products.
+* **Value** The Data Platform architecture needs to be cost effective in order to ensure the cost does not outweigh the ROI of the downstream data products.
+* **Governance** The Data Platform needs to securely ingest and manage sensitive patient data.
+
+### Source Control and Continuous Integration/Continuous Deployment
+
+GitHub will be used for source control and GitHub Actions for Continuous Integration/Continuous Deployment.
 
 ### Documentation Strategy
 
