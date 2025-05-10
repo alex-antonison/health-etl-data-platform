@@ -103,6 +103,8 @@ def generate_stress_data(cursor):
         # Randomly select one record to update
         random_record = random.choice(results)
         stress_level = random.randint(1, 10)  # Stress level scale 1-10
+
+        # Update the integer_app_results value
         cursor.execute(
             """
             UPDATE integer_app_results 
@@ -111,6 +113,17 @@ def generate_stress_data(cursor):
         """,
             (stress_level, random_record[0]),
         )
+
+        # Update the app_results to trigger modified_time update
+        cursor.execute(
+            """
+            UPDATE app_results 
+            SET content_slug = content_slug
+            WHERE id = %s
+        """,
+            (random_record[1],),
+        )
+
         print(f"Random stress level record updated to {stress_level}")
     else:
         # Create new record if none exists or if we're not updating
@@ -139,15 +152,18 @@ def main():
             generate_steps_data(cursor)
             generate_sleep_data(cursor)
             generate_activity_data(cursor)
-            generate_stress_data(cursor)  # This will only insert 25% of the time
+
+            # Only generate stress data 25% of the time
+            if random.random() < 0.25:
+                generate_stress_data(cursor)
 
             # Commit the transaction
             conn.commit()
 
             print(f"Data inserted at {datetime.now()}")
 
-            # Wait for 1 minute before next insertion
-            time.sleep(30)
+            # Wait for 10 seconds before next insertion
+            time.sleep(10)
 
     except KeyboardInterrupt:
         print("\nStopping data simulation...")
