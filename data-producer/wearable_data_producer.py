@@ -147,7 +147,7 @@ def main():
             print(f"Data inserted at {datetime.now()}")
 
             # Wait for 1 minute before next insertion
-            time.sleep(60)
+            time.sleep(30)
 
     except KeyboardInterrupt:
         print("\nStopping data simulation...")
