@@ -99,7 +99,7 @@ def generate_stress_data(cursor):
 
     results = cursor.fetchall()
 
-    if results and random.random() < 0.25:
+    if results and random.random() < 0.50:
         # Randomly select one record to update
         random_record = random.choice(results)
         stress_level = random.randint(1, 10)  # Stress level scale 1-10
