@@ -16,7 +16,7 @@ all_assets_job = define_asset_job("all_assets_job", selection=all_assets)
 defs = Definitions(
     assets=all_assets,
     resources={
-        "duckdb_io_manager": duckdb_resource,
+        "duckdb": duckdb_resource,
     },
     jobs=[all_assets_job],
 )

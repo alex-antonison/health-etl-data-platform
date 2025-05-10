@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any
 
 import dlt
-from dagster import AssetIn, asset, MaterializeResult, Output
+from dagster import AssetIn, asset, MaterializeResult
 from dagster_duckdb import DuckDBResource
 from dlt.sources.helpers import requests
 from dlt.common.runtime.slack import send_slack_message
@@ -57,83 +57,11 @@ def notify_schema_changes(load_info: Dict[str, Any], hook_url: str = None) -> No
                 )
 
 
-@dlt.resource(
-    schema_contract={"tables": "evolve", "columns": "evolve", "data_type": "freeze"}
-)
-def app_results_resource(last_modified: datetime):
-    """Resource for app results with schema contract"""
-    return dlt.resources.postgres(
-        connection_string=f"postgresql://{POSTGRES_CONNECTION['user']}:{POSTGRES_CONNECTION['password']}@{POSTGRES_CONNECTION['host']}:{POSTGRES_CONNECTION['port']}/{POSTGRES_CONNECTION['database']}",
-        query=f"""
-            SELECT ar.*, 
-                   CASE 
-                       WHEN ar.polymorphic_type = 'IntegerAppResult' THEN iar.value
-                       WHEN ar.polymorphic_type = 'DateTimeAppResult' THEN dar.value
-                       WHEN ar.polymorphic_type = 'RangeAppResult' THEN rar.from_value || '-' || rar.to_value
-                   END as metric_value
-            FROM app_results ar
-            LEFT JOIN integer_app_results iar ON ar.id = iar.app_result_id
-            LEFT JOIN datetime_app_results dar ON ar.id = dar.app_result_id
-            LEFT JOIN range_app_results rar ON ar.id = rar.app_result_id
-            WHERE ar.modified_time > '{last_modified}'
-        """,
-    )
-
-
-@dlt.resource(
-    schema_contract={"tables": "evolve", "columns": "evolve", "data_type": "freeze"}
-)
-def integer_app_results_resource(last_modified: datetime):
-    """Resource for integer app results with schema contract"""
-    return dlt.resources.postgres(
-        connection_string=f"postgresql://{POSTGRES_CONNECTION['user']}:{POSTGRES_CONNECTION['password']}@{POSTGRES_CONNECTION['host']}:{POSTGRES_CONNECTION['port']}/{POSTGRES_CONNECTION['database']}",
-        query=f"""
-            SELECT iar.*
-            FROM integer_app_results iar
-            JOIN app_results ar ON ar.id = iar.app_result_id
-            WHERE ar.modified_time > '{last_modified}'
-        """,
-    )
-
-
-@dlt.resource(
-    schema_contract={"tables": "evolve", "columns": "evolve", "data_type": "freeze"}
-)
-def datetime_app_results_resource(last_modified: datetime):
-    """Resource for datetime app results with schema contract"""
-    return dlt.resources.postgres(
-        connection_string=f"postgresql://{POSTGRES_CONNECTION['user']}:{POSTGRES_CONNECTION['password']}@{POSTGRES_CONNECTION['host']}:{POSTGRES_CONNECTION['port']}/{POSTGRES_CONNECTION['database']}",
-        query=f"""
-            SELECT dar.*
-            FROM datetime_app_results dar
-            JOIN app_results ar ON ar.id = dar.app_result_id
-            WHERE ar.modified_time > '{last_modified}'
-        """,
-    )
-
-
-@dlt.resource(
-    schema_contract={"tables": "evolve", "columns": "evolve", "data_type": "freeze"}
-)
-def range_app_results_resource(last_modified: datetime):
-    """Resource for range app results with schema contract"""
-    return dlt.resources.postgres(
-        connection_string=f"postgresql://{POSTGRES_CONNECTION['user']}:{POSTGRES_CONNECTION['password']}@{POSTGRES_CONNECTION['host']}:{POSTGRES_CONNECTION['port']}/{POSTGRES_CONNECTION['database']}",
-        query=f"""
-            SELECT rar.*
-            FROM range_app_results rar
-            JOIN app_results ar ON ar.id = rar.app_result_id
-            WHERE ar.modified_time > '{last_modified}'
-        """,
-    )
-
-
 @asset(
     group_name="raw_data",
     description="Raw data from PostgreSQL database with incremental loading and schema evolution support",
-    io_manager_key="duckdb_io_manager",
 )
-def raw_app_results():
+def raw_app_results(duckdb: DuckDBResource):
     """Load raw app results data from PostgreSQL to DuckDB with incremental loading and schema evolution support"""
     pipeline = dlt.pipeline(
         pipeline_name="health_etl",
@@ -147,7 +75,22 @@ def raw_app_results():
 
     # Load data from PostgreSQL with incremental query and schema contract
     load_info = pipeline.run(
-        app_results_resource(last_modified),
+        dlt.resource(
+            f"postgresql://{POSTGRES_CONNECTION['user']}:{POSTGRES_CONNECTION['password']}@{POSTGRES_CONNECTION['host']}:{POSTGRES_CONNECTION['port']}/{POSTGRES_CONNECTION['database']}",
+            query=f"""
+                SELECT ar.*, 
+                       CASE 
+                           WHEN ar.polymorphic_type = 'IntegerAppResult' THEN iar.value
+                           WHEN ar.polymorphic_type = 'DateTimeAppResult' THEN dar.value
+                           WHEN ar.polymorphic_type = 'RangeAppResult' THEN rar.from_value || '-' || rar.to_value
+                       END as metric_value
+                FROM app_results ar
+                LEFT JOIN integer_app_results iar ON ar.id = iar.app_result_id
+                LEFT JOIN datetime_app_results dar ON ar.id = dar.app_result_id
+                LEFT JOIN range_app_results rar ON ar.id = rar.app_result_id
+                WHERE ar.modified_time > '{last_modified}'
+            """,
+        ),
         table_name="app_results",
         write_disposition="merge",
     )
@@ -168,9 +111,8 @@ def raw_app_results():
 @asset(
     group_name="raw_data",
     description="Raw integer app results data from PostgreSQL to DuckDB with schema evolution support",
-    io_manager_key="duckdb_io_manager",
 )
-def raw_integer_app_results():
+def raw_integer_app_results(duckdb: DuckDBResource):
     """Load raw integer app results data from PostgreSQL to DuckDB with schema evolution support"""
     pipeline = dlt.pipeline(
         pipeline_name="health_etl",
@@ -183,7 +125,15 @@ def raw_integer_app_results():
     last_modified = get_last_modified_time(pipeline, "integer_app_results")
 
     load_info = pipeline.run(
-        integer_app_results_resource(last_modified),
+        dlt.resource(
+            f"postgresql://{POSTGRES_CONNECTION['user']}:{POSTGRES_CONNECTION['password']}@{POSTGRES_CONNECTION['host']}:{POSTGRES_CONNECTION['port']}/{POSTGRES_CONNECTION['database']}",
+            query=f"""
+                SELECT iar.*
+                FROM integer_app_results iar
+                JOIN app_results ar ON ar.id = iar.app_result_id
+                WHERE ar.modified_time > '{last_modified}'
+            """,
+        ),
         table_name="integer_app_results",
         write_disposition="merge",
     )
@@ -206,9 +156,8 @@ def raw_integer_app_results():
 @asset(
     group_name="raw_data",
     description="Raw datetime app results data from PostgreSQL to DuckDB with schema evolution support",
-    io_manager_key="duckdb_io_manager",
 )
-def raw_datetime_app_results():
+def raw_datetime_app_results(duckdb: DuckDBResource):
     """Load raw datetime app results data from PostgreSQL to DuckDB with schema evolution support"""
     pipeline = dlt.pipeline(
         pipeline_name="health_etl",
@@ -221,7 +170,15 @@ def raw_datetime_app_results():
     last_modified = get_last_modified_time(pipeline, "datetime_app_results")
 
     load_info = pipeline.run(
-        datetime_app_results_resource(last_modified),
+        dlt.resource(
+            f"postgresql://{POSTGRES_CONNECTION['user']}:{POSTGRES_CONNECTION['password']}@{POSTGRES_CONNECTION['host']}:{POSTGRES_CONNECTION['port']}/{POSTGRES_CONNECTION['database']}",
+            query=f"""
+                SELECT dar.*
+                FROM datetime_app_results dar
+                JOIN app_results ar ON ar.id = dar.app_result_id
+                WHERE ar.modified_time > '{last_modified}'
+            """,
+        ),
         table_name="datetime_app_results",
         write_disposition="merge",
     )
@@ -244,9 +201,8 @@ def raw_datetime_app_results():
 @asset(
     group_name="raw_data",
     description="Raw range app results data from PostgreSQL to DuckDB with schema evolution support",
-    io_manager_key="duckdb_io_manager",
 )
-def raw_range_app_results():
+def raw_range_app_results(duckdb: DuckDBResource):
     """Load raw range app results data from PostgreSQL to DuckDB with schema evolution support"""
     pipeline = dlt.pipeline(
         pipeline_name="health_etl",
@@ -259,7 +215,15 @@ def raw_range_app_results():
     last_modified = get_last_modified_time(pipeline, "range_app_results")
 
     load_info = pipeline.run(
-        range_app_results_resource(last_modified),
+        dlt.resource(
+            f"postgresql://{POSTGRES_CONNECTION['user']}:{POSTGRES_CONNECTION['password']}@{POSTGRES_CONNECTION['host']}:{POSTGRES_CONNECTION['port']}/{POSTGRES_CONNECTION['database']}",
+            query=f"""
+                SELECT rar.*
+                FROM range_app_results rar
+                JOIN app_results ar ON ar.id = rar.app_result_id
+                WHERE ar.modified_time > '{last_modified}'
+            """,
+        ),
         table_name="range_app_results",
         write_disposition="merge",
     )
