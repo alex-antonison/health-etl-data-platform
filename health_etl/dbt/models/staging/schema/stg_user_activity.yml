@@ -2,10 +2,10 @@ version: 2
 
 models:
   - name: stg_user_activity
-    description: Staging model that combines user activity data from different app result types (datetime, integer, and range)
+    description: This model brings together all user activity from the different app results types.
     columns:
       - name: app_result_id
-        description: 
+        description: Unique identifier for the app result
         tests:
           - not_null
 
