@@ -64,6 +64,9 @@ class RangeAppResult(AppResult):
 * GitHub will be used for source control.
 * GitHub Actions for Continuous Integration/Continuous Deployment.
 * pre-commit will be used to perform tasks such as linting and formatting on each commit.
+* ruff and sqlfluff will be used for linting and formatting python and sql
+* PyTest will be used for unit testing Python code.
+* dbt source and model tests will be used for ensuring source data and transformed data is correct.
 
 ### Documentation Strategy
 
@@ -79,11 +82,11 @@ As source tables and models evolve over time, the data contracts between the Hea
 
 ### Cloud Platform
 
-[aws](aws.amazon.com) is the Cloud Platform of choice for HealthETL as our team has deep experience with building and deploying scalable platforms on AWS.
+[aws](aws.amazon.com) is the Cloud Platform of choice for HealthETL as our team has deep experience with building and deploying scalable applications on AWS.
 
 ### Data Transformation Tools
 
-* [dbt](https://www.getdbt.com/) is the leading data transformation tool in the Data Engineering world. The ability to bring Software Development best practices to the Extract-Load-Transform pattern allowing for teams to utilize the existing compute power of their Cloud Data Warehouse makes it a clear choice. Couple with it the ability to define data tests on both source and created data models, unit tests for sql transformations, and allowing co-locating data asset documentation with the SQL only makes it a more clear winner.
+* [dbt](https://www.getdbt.com/) is the leading data transformation tool in the Data Engineering world. The ability to bring Software Development best practices to the Extract-Load-Transform pattern and allowing for teams to utilize the existing compute power of their Cloud Data Warehouse makes it a clear choice. Couple with it the ability to define data tests on both source and created data models, unit tests for sql transformations, and allowing co-locating data asset documentation with the SQL only makes it a more clear winner.
   * [sqlmesh](https://sqlmesh.com/) is another popular data transformation tool and includes with it some appealing features such that make it less dependent on external orchestration tools like Dagster. However, it is still an evolving tool and has less market adoption than dbt making it more challenging to hire people with experience for it.
 
 ### Orchestration Tool
@@ -104,15 +107,15 @@ First, to identify features that all databases support:
 
 #### Database Comparison
 
-1. *Redshift* Redshift is the AWS supported Cloud Data Warehouse with close integrations with a wide variety of AWS services such as Sagemaker, Lakeformation, etc. However, while Redshift in recent years came out with a Serverless mode of operation, it generally struggles with "spikey" query patterns leading to require provisioning a larger than necessary cluster most of the time. Additionally, it can be challenging to appropriately tune Redshift databases and being that it is not a popular data warehouse, it can be challenging to find Data Engineers with the background to efficiently support it. That all being said, Redshift is not the best fit.
-2. *Snowflake* Snowflake has become a dominant Cloud Data Warehouse in the Data Engineering space for some time. Between it adopting the concept of separating compute and storage, features like time-travel (well before Open Table Formats), database cloning, and strong integrations across all major cloud platforms (AWS, GCP, and Azure); it is the clear winner.
-3. *ClickHouse* ClickHouse is an up-and-coming open source Cloud Data Warehouse that has both self-hosting and managed hosting options. While it does not have the same level of integrations as Snowflake, it has a more transparent cost model and can be operated at a lower cost than Snowflake. That being said, it is not as fully featured as Snowflake and not many modern data tools integrate well with it.
+1. **Redshift** is the AWS supported Cloud Data Warehouse with close integrations with a wide variety of AWS services such as Sagemaker, Lakeformation, etc. However, while Redshift in recent years came out with a Serverless mode of operation, it generally struggles with "spikey" query patterns leading to require provisioning a larger than necessary cluster most of the time. Additionally, it can be challenging to appropriately tune Redshift databases and being that it is not a popular data warehouse, it can be challenging to find Data Engineers with the background to efficiently support it. That all being said, Redshift is not the best fit.
+2. **Snowflake** has become a dominant Cloud Data Warehouse in the Data Engineering space for some time. Between it adopting the concept of separating compute and storage, features like time-travel (well before Open Table Formats), database cloning, and strong integrations across all major cloud platforms (AWS, GCP, and Azure); it is the clear winner.
+3. **ClickHouse** is an up-and-coming open source Cloud Data Warehouse that has both self-hosting and managed hosting options. While it does not have the same level of integrations as Snowflake, it has a more transparent cost model and can be operated at a lower cost than Snowflake. That being said, it is not as fully featured as Snowflake and not many modern data tools integrate well with it.
 
 #### Cloud Data Warehouse Conclusion
 
 Snowflake will be the Cloud Data Warehouse that HealthETL uses for transforming and serving up data. This was largely decided by the deep integrations Snowflake has with the general modern data stack ecosystem but in particular with AWS, Dagster, and dbt.
 
-*Note* In the spirit of keeping this project fully local, I will be using DuckDB instead. But for the narrative, Snowflake is the Cloud Data Warehouse of choice.
+****Note*** In the spirit of keeping this project fully local, I will be using DuckDB instead. But for the narrative, Snowflake is the Cloud Data Warehouse of choice.
 
 ### Extract and Load Data
 
