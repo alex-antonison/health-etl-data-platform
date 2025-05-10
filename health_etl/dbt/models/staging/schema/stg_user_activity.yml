@@ -3,6 +3,12 @@ version: 2
 models:
   - name: stg_user_activity
     description: This model brings together all user activity from the different app results types.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - app_result_id
+            - content_slug
+
     columns:
       - name: app_result_id
         description: Unique identifier for the app result

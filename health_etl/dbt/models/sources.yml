@@ -10,7 +10,6 @@ sources:
           - name: app_result_id
             description: "Unique identifier for the app result"
             tests:
-              - unique
               - not_null
           - name: content_slug
             description: "Slug identifying the content"
@@ -27,7 +26,6 @@ sources:
           - name: app_result_id
             description: "Unique identifier for the app result"
             tests:
-              - unique
               - not_null
           - name: content_slug
             description: "Slug identifying the content"
@@ -44,7 +42,6 @@ sources:
           - name: app_result_id
             description: "Unique identifier for the app result"
             tests:
-              - unique
               - not_null
           - name: content_slug
             description: "Slug identifying the content"
