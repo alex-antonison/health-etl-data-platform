@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  db:
+    build: .
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=healthetl
+      - POSTGRES_USER=healthetl_user
+      - POSTGRES_PASSWORD=healthetl_password
+
+volumes:
+  postgres_data: 
