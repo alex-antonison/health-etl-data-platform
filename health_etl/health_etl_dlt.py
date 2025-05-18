@@ -9,9 +9,9 @@ def get_duckdb_conn():
 
 def get_last_modified_time(table_name):
     """Get the last modified time from the DuckDB destination"""
-
-    duckdb_conn = get_duckdb_conn()
+    
     try:
+        duckdb_conn = get_duckdb_conn()
         result = duckdb_conn.execute(f"""
             SELECT MAX(modified_time) as last_modified
             FROM {table_name}
@@ -140,8 +140,20 @@ pg_conn = psycopg2.connect(
     password=dlt.secrets["postgres"]["password"],
 )
 
+print("--------------------------------")
+print("Loading integer app results")
+print("--------------------------------")
 load_info = pipeline.run(load_integer_app_results(pg_conn))
-load_info = pipeline.run(load_date_time_app_results(pg_conn))
-load_info = pipeline.run(load_range_app_results(pg_conn))
+print(load_info)
 
+print("--------------------------------")
+print("Loading date time app results")
+print("--------------------------------")
+load_info = pipeline.run(load_date_time_app_results(pg_conn))
+print(load_info)
+
+print("--------------------------------")
+print("Loading range app results")
+print("--------------------------------")
+load_info = pipeline.run(load_range_app_results(pg_conn))
 print(load_info)
