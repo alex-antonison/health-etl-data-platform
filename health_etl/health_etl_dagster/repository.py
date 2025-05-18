@@ -1,9 +1,12 @@
 from dagster import Definitions
-from dagster_duckdb_pandas import DuckDBPandasIOManager
+from .assets import run_load_date_time_app_results, run_load_integer_app_results, run_load_range_app_results
 
-from .jobs import dlt_job
+# from .jobs import dlt_job
 
 defs = Definitions(
-    jobs=[dlt_job],
-    # resources={"io_manager": DuckDBPandasIOManager(database="healthetl_pipeline.duckdb")},    
+    assets=[
+        run_load_date_time_app_results,
+        run_load_integer_app_results,
+        run_load_range_app_results
+    ],
 )

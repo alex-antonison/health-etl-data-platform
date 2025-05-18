@@ -30,128 +30,111 @@ def get_last_modified_time(table_name):
     except Exception:
         return datetime.min
 
-@dlt.source
-def load_app_data():
-    @dlt.resource(
-            table_name="stg_integer_app_results",
-            write_disposition="merge",
-            primary_key="app_result_id"
-    )
-    def load_integer_app_results():
-        print("Loading integer app results")
 
-        pg_conn = get_pg_conn()
+@dlt.resource(
+        table_name="stg_integer_app_results",
+        write_disposition="merge",
+        primary_key="app_result_id"
+)
+def load_integer_app_results():
+    print("Loading integer app results")
 
-        last_modified_time = get_last_modified_time("stg_integer_app_results")
+    pg_conn = get_pg_conn()
 
-        with pg_conn.cursor(cursor_factory=RealDictCursor) as cursor:
-            cursor.execute(
-                """
-                SELECT 	
-                    iar.app_result_id,
-                    ar.content_slug,
-                    ar.created_time,
-                    ar.modified_time,
-                    iar.value
-                FROM public.integer_app_results iar
-                JOIN public.app_results ar ON ar.id = iar.app_result_id
-                WHERE ar.polymorphic_type = 'IntegerAppResult'
-                AND ar.modified_time > %s
-                """,
-                (last_modified_time,),
-            )
+    last_modified_time = get_last_modified_time("stg_integer_app_results")
 
-            results = cursor.fetchall()
+    with pg_conn.cursor(cursor_factory=RealDictCursor) as cursor:
+        cursor.execute(
+            """
+            SELECT 	
+                iar.app_result_id,
+                ar.content_slug,
+                ar.created_time,
+                ar.modified_time,
+                iar.value
+            FROM public.integer_app_results iar
+            JOIN public.app_results ar ON ar.id = iar.app_result_id
+            WHERE ar.polymorphic_type = 'IntegerAppResult'
+            AND ar.modified_time > %s
+            """,
+            (last_modified_time,),
+        )
 
-        data = [dict(row) for row in results]
+        results = cursor.fetchall()
 
-        yield data
+    data = [dict(row) for row in results]
 
-
-    @dlt.resource(
-            table_name="stg_date_time_app_results",
-            write_disposition="merge",
-            primary_key="app_result_id"
-    )
-    def load_date_time_app_results():
-
-        print("Loading date time app results")
-
-        last_modified_time = get_last_modified_time("stg_date_time_app_results")
-
-        pg_conn = get_pg_conn()
-
-        with pg_conn.cursor(cursor_factory=RealDictCursor) as cursor:
-            cursor.execute(
-                """
-                SELECT 	
-                    dar.app_result_id,
-                    ar.content_slug,
-                    ar.created_time,
-                    ar.modified_time,
-                    dar.value
-                FROM public.datetime_app_results dar 
-                JOIN public.app_results ar ON ar.id = dar.app_result_id
-                WHERE ar.polymorphic_type = 'DateTimeAppResult'
-                AND ar.modified_time > %s
-                """,
-                (last_modified_time,),
-            )
-
-            results = cursor.fetchall()
-
-        data = [dict(row) for row in results]
-
-        yield data
-
-    @dlt.resource(
-            table_name="stg_range_app_results",
-            write_disposition="merge",
-            primary_key="app_result_id"
-    )
-    def load_range_app_results():
-        print("Loading range app results")
-
-        pg_conn = get_pg_conn()
-
-        last_modified_time = get_last_modified_time("stg_range_app_results")
-
-        with pg_conn.cursor(cursor_factory=RealDictCursor) as cursor:
-            cursor.execute(
-                """
-                SELECT 	
-                    rar.app_result_id,
-                    ar.content_slug,
-                    ar.created_time,
-                    ar.modified_time,
-                    rar.from_value,
-                    rar.to_value
-                FROM public.range_app_results rar 
-                JOIN public.app_results ar ON ar.id = rar.app_result_id
-                WHERE ar.polymorphic_type = 'RangeAppResult'
-                AND ar.modified_time > %s
-                """,
-                (last_modified_time,),
-            )
-
-            results = cursor.fetchall()
-
-        data = [dict(row) for row in results]
-
-        yield data
-
-    return load_date_time_app_results, load_integer_app_results, load_range_app_results
+    yield data
 
 
-def run_loading_app_data():
-    pipeline = dlt.pipeline(
-        pipeline_name="healthetl_pipeline",
-        destination="duckdb",
-        dataset_name="healthetl",
-        pipelines_dir="/tmp/healthetl_pipeline",
-    )
+@dlt.resource(
+        table_name="stg_date_time_app_results",
+        write_disposition="merge",
+        primary_key="app_result_id"
+)
+def load_date_time_app_results():
 
-    load_info = pipeline.run(load_app_data())
-    return load_info
+    print("Loading date time app results")
 
-run_loading_app_data()
+    last_modified_time = get_last_modified_time("stg_date_time_app_results")
+
+    pg_conn = get_pg_conn()
+
+    with pg_conn.cursor(cursor_factory=RealDictCursor) as cursor:
+        cursor.execute(
+            """
+            SELECT 	
+                dar.app_result_id,
+                ar.content_slug,
+                ar.created_time,
+                ar.modified_time,
+                dar.value
+            FROM public.datetime_app_results dar 
+            JOIN public.app_results ar ON ar.id = dar.app_result_id
+            WHERE ar.polymorphic_type = 'DateTimeAppResult'
+            AND ar.modified_time > %s
+            """,
+            (last_modified_time,),
+        )
+
+        results = cursor.fetchall()
+
+    data = [dict(row) for row in results]
+
+    yield data
+
+@dlt.resource(
+        table_name="stg_range_app_results",
+        write_disposition="merge",
+        primary_key="app_result_id"
+)
+def load_range_app_results():
+    print("Loading range app results")
+
+    pg_conn = get_pg_conn()
+
+    last_modified_time = get_last_modified_time("stg_range_app_results")
+
+    with pg_conn.cursor(cursor_factory=RealDictCursor) as cursor:
+        cursor.execute(
+            """
+            SELECT 	
+                rar.app_result_id,
+                ar.content_slug,
+                ar.created_time,
+                ar.modified_time,
+                rar.from_value,
+                rar.to_value
+            FROM public.range_app_results rar 
+            JOIN public.app_results ar ON ar.id = rar.app_result_id
+            WHERE ar.polymorphic_type = 'RangeAppResult'
+            AND ar.modified_time > %s
+            """,
+            (last_modified_time,),
+        )
+
+        results = cursor.fetchall()
+
+    data = [dict(row) for row in results]
+
+    yield data
