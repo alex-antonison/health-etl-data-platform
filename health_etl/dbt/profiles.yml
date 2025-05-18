@@ -3,7 +3,7 @@ health_etl:
   outputs:
     dev:
       type: duckdb
-      path: ../duckdb-database/health_etl.duckdb
+      path: ../healthetl_pipeline.duckdb
       extensions:
         - parquet
         - httpfs
