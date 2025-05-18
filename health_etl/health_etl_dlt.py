@@ -129,7 +129,7 @@ def load_range_app_results(pg_conn):
 pipeline = dlt.pipeline(
     pipeline_name="healthetl_pipeline",
     destination="duckdb",
-    dataset_name="health_etl"
+    dataset_name="healthetl"
 )
 
 pg_conn = psycopg2.connect(
