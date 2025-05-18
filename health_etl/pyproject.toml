@@ -5,11 +5,12 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "dagster>=1.10.15",
+    "dagster-embedded-elt>=0.26.15",
+    "dagster-webserver>=1.10.15",
     "dbt-duckdb>=1.9.3",
     "dlt[duckdb,postgres]>=1.11.0",
     "duckdb>=1.2.2",
+    "pandas>=2.2.3",
     "psycopg2>=2.9.10",
 ]
-
-[dependency-groups]
-dev = []
