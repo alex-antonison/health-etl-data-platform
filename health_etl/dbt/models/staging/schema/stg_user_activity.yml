@@ -14,7 +14,7 @@ models:
     columns:
       - name: app_result_id
         description: Unique identifier for the app result
-        data_type: integer
+        data_type: bigint
         tests:
           - not_null
 
@@ -26,13 +26,13 @@ models:
 
       - name: created_time
         description: When the value was created
-        data_type: timestamp
+        data_type: TIMESTAMP WITH TIME ZONE
         tests:
           - not_null
 
       - name: modified_time
         description: When the value was last modified
-        data_type: timestamp
+        data_type: TIMESTAMP WITH TIME ZONE
         tests:
           - not_null
 

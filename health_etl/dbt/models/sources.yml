@@ -2,15 +2,17 @@ version: 2
 
 sources:
   - name: app_results
-    schema: main
+    schema: healthetl
     tables:
-      - name: integer_app_results
+      - name: stg_integer_app_results
         description: "Integer app results from the application"
         columns:
           - name: app_result_id
             description: "Unique identifier for the app result"
             tests:
               - not_null
+              - unique
+          - name: user_id
           - name: content_slug
             description: "Slug identifying the content"
           - name: created_time
@@ -20,13 +22,14 @@ sources:
           - name: value
             description: "The integer value of the result"
 
-      - name: datetime_app_results
+      - name: stg_date_time_app_results
         description: "Datetime app results from the application"
         columns:
           - name: app_result_id
             description: "Unique identifier for the app result"
             tests:
               - not_null
+              - unique
           - name: content_slug
             description: "Slug identifying the content"
           - name: created_time
@@ -36,13 +39,14 @@ sources:
           - name: value
             description: "The datetime value of the result"
 
-      - name: range_app_results
+      - name: stg_range_app_results
         description: "Range app results from the application"
         columns:
           - name: app_result_id
             description: "Unique identifier for the app result"
             tests:
               - not_null
+              - unique
           - name: content_slug
             description: "Slug identifying the content"
           - name: created_time
