@@ -4,12 +4,24 @@ import duckdb
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
+
 def get_duckdb_conn():
     return duckdb.connect("healthetl_pipeline.duckdb")
 
+
+def get_pg_conn():
+    return psycopg2.connect(
+        host=dlt.secrets["postgres.app"]["host"],
+        port=dlt.secrets["postgres.app"]["port"],
+        database=dlt.secrets["postgres.app"]["database"],
+        user=dlt.secrets["postgres.app"]["username"],
+        password=dlt.secrets["postgres.app"]["password"],
+    )
+
+
 def get_last_modified_time(table_name):
     """Get the last modified time from the DuckDB destination"""
-    
+
     try:
         duckdb_conn = get_duckdb_conn()
         result = duckdb_conn.execute(f"""
@@ -20,19 +32,23 @@ def get_last_modified_time(table_name):
     except Exception:
         return datetime.min
 
+
 @dlt.resource(
-        table_name="stg_integer_app_results",
-        write_disposition="merge",
-        primary_key="app_result_id"
+    table_name="stg_integer_app_results",
+    write_disposition="merge",
+    primary_key="app_result_id",
 )
-def load_integer_app_results(pg_conn):
+def load_integer_app_results():
+    print("Loading integer app results")
+
+    pg_conn = get_pg_conn()
 
     last_modified_time = get_last_modified_time("stg_integer_app_results")
 
     with pg_conn.cursor(cursor_factory=RealDictCursor) as cursor:
         cursor.execute(
             """
-            SELECT 	
+            SELECT
                 iar.app_result_id,
                 ar.content_slug,
                 ar.created_time,
@@ -54,32 +70,27 @@ def load_integer_app_results(pg_conn):
 
 
 @dlt.resource(
-        table_name="stg_date_time_app_results",
-        write_disposition="merge",
-        primary_key="app_result_id"
+    table_name="stg_date_time_app_results",
+    write_disposition="merge",
+    primary_key="app_result_id",
 )
-def load_date_time_app_results(pg_conn):
+def load_date_time_app_results():
+    print("Loading date time app results")
 
     last_modified_time = get_last_modified_time("stg_date_time_app_results")
 
-    pg_conn = psycopg2.connect(
-        host=dlt.secrets["postgres"]["host"],
-        port=dlt.secrets["postgres"]["port"],
-        database=dlt.secrets["postgres"]["database"],
-        user=dlt.secrets["postgres"]["username"],
-        password=dlt.secrets["postgres"]["password"],
-    )
+    pg_conn = get_pg_conn()
 
     with pg_conn.cursor(cursor_factory=RealDictCursor) as cursor:
         cursor.execute(
             """
-            SELECT 	
+            SELECT
                 dar.app_result_id,
                 ar.content_slug,
                 ar.created_time,
                 ar.modified_time,
                 dar.value
-            FROM public.datetime_app_results dar 
+            FROM public.datetime_app_results dar
             JOIN public.app_results ar ON ar.id = dar.app_result_id
             WHERE ar.polymorphic_type = 'DateTimeAppResult'
             AND ar.modified_time > %s
@@ -93,26 +104,30 @@ def load_date_time_app_results(pg_conn):
 
     yield data
 
+
 @dlt.resource(
-        table_name="stg_range_app_results",
-        write_disposition="merge",
-        primary_key="app_result_id"
+    table_name="stg_range_app_results",
+    write_disposition="merge",
+    primary_key="app_result_id",
 )
-def load_range_app_results(pg_conn):
+def load_range_app_results():
+    print("Loading range app results")
+
+    pg_conn = get_pg_conn()
 
     last_modified_time = get_last_modified_time("stg_range_app_results")
 
     with pg_conn.cursor(cursor_factory=RealDictCursor) as cursor:
         cursor.execute(
             """
-            SELECT 	
+            SELECT
                 rar.app_result_id,
                 ar.content_slug,
                 ar.created_time,
                 ar.modified_time,
                 rar.from_value,
                 rar.to_value
-            FROM public.range_app_results rar 
+            FROM public.range_app_results rar
             JOIN public.app_results ar ON ar.id = rar.app_result_id
             WHERE ar.polymorphic_type = 'RangeAppResult'
             AND ar.modified_time > %s
@@ -125,35 +140,3 @@ def load_range_app_results(pg_conn):
     data = [dict(row) for row in results]
 
     yield data
-
-pipeline = dlt.pipeline(
-    pipeline_name="healthetl_pipeline",
-    destination="duckdb",
-    dataset_name="healthetl"
-)
-
-pg_conn = psycopg2.connect(
-    host=dlt.secrets["postgres"]["host"],
-    port=dlt.secrets["postgres"]["port"],
-    database=dlt.secrets["postgres"]["database"],
-    user=dlt.secrets["postgres"]["username"],
-    password=dlt.secrets["postgres"]["password"],
-)
-
-print("--------------------------------")
-print("Loading integer app results")
-print("--------------------------------")
-load_info = pipeline.run(load_integer_app_results(pg_conn))
-print(load_info)
-
-print("--------------------------------")
-print("Loading date time app results")
-print("--------------------------------")
-load_info = pipeline.run(load_date_time_app_results(pg_conn))
-print(load_info)
-
-print("--------------------------------")
-print("Loading range app results")
-print("--------------------------------")
-load_info = pipeline.run(load_range_app_results(pg_conn))
-print(load_info)

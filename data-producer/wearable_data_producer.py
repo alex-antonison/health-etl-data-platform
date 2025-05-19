@@ -91,7 +91,7 @@ def generate_stress_data(cursor):
     """Generate stress level data (IntegerAppResult)"""
     # First, get all existing stress records
     cursor.execute("""
-        SELECT iar.id, ar.id 
+        SELECT iar.id, ar.id
         FROM integer_app_results iar
         JOIN app_results ar ON ar.id = iar.app_result_id
         WHERE ar.content_slug = 'stress_level'
@@ -107,7 +107,7 @@ def generate_stress_data(cursor):
         # Update the integer_app_results value
         cursor.execute(
             """
-            UPDATE integer_app_results 
+            UPDATE integer_app_results
             SET value = %s
             WHERE id = %s
         """,
@@ -117,7 +117,7 @@ def generate_stress_data(cursor):
         # Update the app_results to trigger modified_time update
         cursor.execute(
             """
-            UPDATE app_results 
+            UPDATE app_results
             SET content_slug = content_slug
             WHERE id = %s
         """,
