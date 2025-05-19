@@ -4,8 +4,10 @@ import duckdb
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
+
 def get_duckdb_conn():
     return duckdb.connect("healthetl_pipeline.duckdb")
+
 
 def get_pg_conn():
     return psycopg2.connect(
@@ -19,7 +21,7 @@ def get_pg_conn():
 
 def get_last_modified_time(table_name):
     """Get the last modified time from the DuckDB destination"""
-    
+
     try:
         duckdb_conn = get_duckdb_conn()
         result = duckdb_conn.execute(f"""
@@ -32,9 +34,9 @@ def get_last_modified_time(table_name):
 
 
 @dlt.resource(
-        table_name="stg_integer_app_results",
-        write_disposition="merge",
-        primary_key="app_result_id"
+    table_name="stg_integer_app_results",
+    write_disposition="merge",
+    primary_key="app_result_id",
 )
 def load_integer_app_results():
     print("Loading integer app results")
@@ -68,12 +70,11 @@ def load_integer_app_results():
 
 
 @dlt.resource(
-        table_name="stg_date_time_app_results",
-        write_disposition="merge",
-        primary_key="app_result_id"
+    table_name="stg_date_time_app_results",
+    write_disposition="merge",
+    primary_key="app_result_id",
 )
 def load_date_time_app_results():
-
     print("Loading date time app results")
 
     last_modified_time = get_last_modified_time("stg_date_time_app_results")
@@ -103,10 +104,11 @@ def load_date_time_app_results():
 
     yield data
 
+
 @dlt.resource(
-        table_name="stg_range_app_results",
-        write_disposition="merge",
-        primary_key="app_result_id"
+    table_name="stg_range_app_results",
+    write_disposition="merge",
+    primary_key="app_result_id",
 )
 def load_range_app_results():
     print("Loading range app results")

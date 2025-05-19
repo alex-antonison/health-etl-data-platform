@@ -1,4 +1,4 @@
-from dagster import asset, SourceAsset
+from dagster import asset
 import dlt
 from health_etl_dlt.health_etl_dlt import (
     load_date_time_app_results,
