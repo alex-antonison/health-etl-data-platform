@@ -9,4 +9,4 @@ ENV POSTGRES_USER=healthetl_user
 ENV POSTGRES_PASSWORD=healthetl_password
 
 # Expose PostgreSQL port
-EXPOSE 5432 
+EXPOSE 5432
