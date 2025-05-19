@@ -9,11 +9,11 @@ def get_duckdb_conn():
 
 def get_pg_conn():
     return psycopg2.connect(
-        host=dlt.secrets["postgres"]["host"],
-        port=dlt.secrets["postgres"]["port"],
-        database=dlt.secrets["postgres"]["database"],
-        user=dlt.secrets["postgres"]["username"],
-        password=dlt.secrets["postgres"]["password"],
+        host=dlt.secrets["postgres.app"]["host"],
+        port=dlt.secrets["postgres.app"]["port"],
+        database=dlt.secrets["postgres.app"]["database"],
+        user=dlt.secrets["postgres.app"]["username"],
+        password=dlt.secrets["postgres.app"]["password"],
     )
 
 

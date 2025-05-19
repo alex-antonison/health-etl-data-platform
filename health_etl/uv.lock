@@ -358,6 +358,19 @@ wheels = [
 ]
 
 [[package]]
+name = "dagster-postgres"
+version = "0.26.15"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "dagster" },
+    { name = "psycopg2-binary" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a1/a1/2e58588b01e857a44cc94f3add629979744a589f7a09c6f2959982aa6ec1/dagster_postgres-0.26.15.tar.gz", hash = "sha256:2455d5df2317cfe77ed3270215360d899b16edcaa7274ceff3feae9a76ded028", size = 16305, upload_time = "2025-05-15T18:42:37.38Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/59/71/ea82fa085882857d5b994e6d11877e98a181fcc26c0af7508ff9dd28331b/dagster_postgres-0.26.15-py3-none-any.whl", hash = "sha256:b3b84d03612fd13d5f9d65387499de3f6c32ab0471259d160903da654d0f78fd", size = 22868, upload_time = "2025-05-15T18:42:35.951Z" },
+]
+
+[[package]]
 name = "dagster-shared"
 version = "0.26.15"
 source = { registry = "https://pypi.org/simple" }
@@ -826,6 +839,7 @@ dependencies = [
     { name = "dagster-duckdb" },
     { name = "dagster-duckdb-pandas" },
     { name = "dagster-embedded-elt" },
+    { name = "dagster-postgres" },
     { name = "dagster-webserver" },
     { name = "dbt-duckdb" },
     { name = "dlt", extra = ["duckdb", "postgres"] },
@@ -841,6 +855,7 @@ requires-dist = [
     { name = "dagster-duckdb", specifier = ">=0.26.15" },
     { name = "dagster-duckdb-pandas", specifier = ">=0.26.15" },
     { name = "dagster-embedded-elt", specifier = ">=0.26.15" },
+    { name = "dagster-postgres", specifier = ">=0.26.15" },
     { name = "dagster-webserver", specifier = ">=1.10.15" },
     { name = "dbt-duckdb", specifier = ">=1.9.3" },
     { name = "dlt", extras = ["duckdb", "postgres"], specifier = ">=1.11.0" },

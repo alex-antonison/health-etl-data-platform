@@ -10,6 +10,7 @@ dependencies = [
     "dagster-duckdb>=0.26.15",
     "dagster-duckdb-pandas>=0.26.15",
     "dagster-embedded-elt>=0.26.15",
+    "dagster-postgres>=0.26.15",
     "dagster-webserver>=1.10.15",
     "dbt-duckdb>=1.9.3",
     "dlt[duckdb,postgres]>=1.11.0",

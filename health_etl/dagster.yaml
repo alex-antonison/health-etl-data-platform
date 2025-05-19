@@ -1,0 +1,8 @@
+storage:
+  postgres:
+    postgres_db:
+      username: healthetl_user
+      password: healthetl_password
+      hostname: localhost
+      db_name: healthetl
+      port: 5434
