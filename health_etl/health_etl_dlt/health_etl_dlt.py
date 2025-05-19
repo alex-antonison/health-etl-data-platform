@@ -48,7 +48,7 @@ def load_integer_app_results():
     with pg_conn.cursor(cursor_factory=RealDictCursor) as cursor:
         cursor.execute(
             """
-            SELECT 	
+            SELECT
                 iar.app_result_id,
                 ar.content_slug,
                 ar.created_time,
@@ -84,13 +84,13 @@ def load_date_time_app_results():
     with pg_conn.cursor(cursor_factory=RealDictCursor) as cursor:
         cursor.execute(
             """
-            SELECT 	
+            SELECT
                 dar.app_result_id,
                 ar.content_slug,
                 ar.created_time,
                 ar.modified_time,
                 dar.value
-            FROM public.datetime_app_results dar 
+            FROM public.datetime_app_results dar
             JOIN public.app_results ar ON ar.id = dar.app_result_id
             WHERE ar.polymorphic_type = 'DateTimeAppResult'
             AND ar.modified_time > %s
@@ -120,14 +120,14 @@ def load_range_app_results():
     with pg_conn.cursor(cursor_factory=RealDictCursor) as cursor:
         cursor.execute(
             """
-            SELECT 	
+            SELECT
                 rar.app_result_id,
                 ar.content_slug,
                 ar.created_time,
                 ar.modified_time,
                 rar.from_value,
                 rar.to_value
-            FROM public.range_app_results rar 
+            FROM public.range_app_results rar
             JOIN public.app_results ar ON ar.id = rar.app_result_id
             WHERE ar.polymorphic_type = 'RangeAppResult'
             AND ar.modified_time > %s
