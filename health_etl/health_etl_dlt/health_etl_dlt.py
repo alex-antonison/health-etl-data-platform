@@ -1,12 +1,17 @@
 import dlt
 from datetime import datetime
-import duckdb
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
 
-def get_duckdb_conn():
-    return duckdb.connect("healthetl_pipeline.duckdb")
+def get_etl_pg_conn():
+    return psycopg2.connect(
+        host=dlt.secrets["destination.postgres.credentials"]["host"],
+        port=dlt.secrets["destination.postgres.credentials"]["port"],
+        database=dlt.secrets["destination.postgres.credentials"]["database"],
+        user=dlt.secrets["destination.postgres.credentials"]["username"],
+        password=dlt.secrets["destination.postgres.credentials"]["password"],
+    )
 
 
 def get_pg_conn():
@@ -20,14 +25,16 @@ def get_pg_conn():
 
 
 def get_last_modified_time(table_name):
-    """Get the last modified time from the DuckDB destination"""
-
+    """Get the last modified time from the ETL Postgres destination database"""
     try:
-        duckdb_conn = get_duckdb_conn()
-        result = duckdb_conn.execute(f"""
-            SELECT MAX(modified_time) as last_modified
-            FROM {table_name}
-        """).fetchone()
+        pg_conn = get_etl_pg_conn()
+        with pg_conn.cursor() as cursor:
+            cursor.execute(f"""
+                SELECT MAX(modified_time) as last_modified
+                FROM {table_name}
+            """)
+            result = cursor.fetchone()
+        pg_conn.close()
         return result[0] if result and result[0] else datetime.min
     except Exception:
         return datetime.min
