@@ -1,0 +1,3 @@
+source .venv/bin/activate
+export user=healthetl_user
+export password=healthetl_password
