@@ -6,7 +6,7 @@ At HealthETL, we are focused around efficiently and securely ingesting client he
 
 ### Project Setup
 
-To simulate data, I first spin up a postgres database via docker in the [app-database](./app-database/) directory. With docker running, all you need to do is run:
+To set up this project, you first need to set up the app-database that is used for simulating user activity via the [app-database](./app-database/) directory
 
 ```bash
 docker-compose up -d
@@ -14,11 +14,23 @@ docker-compose up -d
 
 Once the database is running, you can then go into the [data-producer](./data-producer/) and run the [wearable_data_producer.py](./data-producer/wearable_data_producer.py) script. This will run periodically and both add and update some data using the Faker python package.
 
-Once that is up and going, you can then go into the [health_etl](./health_etl/) directory and run the [incremental_load.py](./health_etl/incremental_load.py) to incrementally load data from the postgres database into DuckDB.
+Once you have the `app-database` and `data-producing` script running, you can then spin up the [etl-database](./etl-database/) with
 
-From there, you can go into the [dbt](./health_etl/dbt/) directory to run commands like `dbt build` to run and test the models. First you will need to run `dbt deps` to install the `dbt_utils` package.
+```bash
+docker-compose up -d
+```
 
-When done with the project, you can spin the postgres database with:
+While both databases are Postgres, this is meant to simulate moving data from Postgres into theoretically Snowflake.
+
+Once that is up and going, you can then go into the [health_etl](./health_etl/) and first install the virtual environment with `uv sync` and then install the dbt packages within the [dbt](./health_etl/dbt/) and run `dbt deps`
+
+Next, make a copy of [.envrc-template](./health_etl/.envrc-template) and populate the `user` and `password` with the appropriate credentials for accessing the `etl-database` (you can get that from the `etl-database` directory).
+
+Once installed, you go back to the [health_etl](./health_etl/) directory and run `dagster dev` to bring up the [Dagster UI]([localhost:3000](http://localhost:3000/assets))
+
+From there, you can then materialize everything via the assets page.
+
+When done with the project, you can spin down the postgres databases with within each respective directory:
 
 ```bash
 docker-compose down
@@ -115,7 +127,7 @@ First, to identify features that all databases support:
 
 Snowflake will be the Cloud Data Warehouse that HealthETL uses for transforming and serving up data. This was largely decided by the deep integrations Snowflake has with the general modern data stack ecosystem but in particular with AWS, Dagster, and dbt.
 
-****Note*** In the spirit of keeping this project fully local, I will be using DuckDB instead. But for the narrative, Snowflake is the Cloud Data Warehouse of choice.
+****Note*** In the spirit of keeping this project fully local, I will be using Postgres instead. But for the narrative, Snowflake is the Cloud Data Warehouse of choice.
 
 ### Extract and Load Data
 
@@ -139,7 +151,7 @@ With the use case to only ingest data once per day and supporting schema evoluti
 
 * **Transformation** [dbt](https://www.getdbt.com/)
 * **Orchestration** [Dagster](https://dagster.io)
-* **Cloud Data Warehouse** [Snowflake](https://www.snowflake.com/) (but really [DuckDB](https://duckdb.org/))
+* **Cloud Data Warehouse** [Snowflake](https://www.snowflake.com/) (but really Postgres)
 * **Extract Load** [dltHub](https://dlthub.com/)
 
 ### Data Governance
