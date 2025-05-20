@@ -2,9 +2,14 @@ health_etl:
   target: dev
   outputs:
     dev:
-      type: duckdb
-      path: ../healthetl_pipeline.duckdb
-      extensions:
-        - parquet
-        - httpfs
-      threads: 4
+      type: postgres
+      host: localhost
+      user: "{{ env_var('user') }}"
+      password: "{{ env_var('password') }}"
+      port: 5434
+      dbname: healthetl
+      schema: data_warehouse
+      threads: 3
+      keepalives_idle: 0
+      connect_timeout: 10
+      retries: 3

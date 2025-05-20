@@ -18,7 +18,6 @@ clean-targets:
 
 models:
   health_etl:
-    materialized: table
     staging:
       materialized: table
       +schema: staging
