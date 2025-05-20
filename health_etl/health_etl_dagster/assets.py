@@ -8,7 +8,7 @@ from health_etl_dlt.health_etl_dlt import (
 
 
 @asset
-def run_load_date_time_app_results():
+def stg_date_time_app_results():
     pipeline = dlt.pipeline(
         pipeline_name="healthetl_pipeline",
         destination="postgres",
@@ -21,7 +21,7 @@ def run_load_date_time_app_results():
 
 
 @asset
-def run_load_integer_app_results():
+def stg_integer_app_results():
     pipeline = dlt.pipeline(
         pipeline_name="healthetl_pipeline",
         destination="postgres",
@@ -34,7 +34,7 @@ def run_load_integer_app_results():
 
 
 @asset
-def run_load_range_app_results():
+def stg_range_app_results():
     pipeline = dlt.pipeline(
         pipeline_name="healthetl_pipeline",
         destination="postgres",

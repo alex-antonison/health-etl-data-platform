@@ -2,9 +2,13 @@ version: 2
 
 sources:
   - name: app_results
-    schema: healthetl
+    database: healthetl
+    schema: healthetl_data
     tables:
       - name: stg_integer_app_results
+        meta:
+          dagster:
+            asset_key: ['stg_integer_app_results']
         description: "Integer app results from the application"
         columns:
           - name: app_result_id
@@ -23,6 +27,9 @@ sources:
             description: "The integer value of the result"
 
       - name: stg_date_time_app_results
+        meta:
+          dagster:
+            asset_key: ['stg_date_time_app_results']
         description: "Datetime app results from the application"
         columns:
           - name: app_result_id
@@ -40,6 +47,9 @@ sources:
             description: "The datetime value of the result"
 
       - name: stg_range_app_results
+        meta:
+          dagster:
+            asset_key: ['stg_range_app_results']
         description: "Range app results from the application"
         columns:
           - name: app_result_id

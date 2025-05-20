@@ -1,8 +1,8 @@
 from dagster import Definitions
 from .assets import (
-    run_load_date_time_app_results,
-    run_load_integer_app_results,
-    run_load_range_app_results,
+    stg_date_time_app_results,
+    stg_integer_app_results,
+    stg_range_app_results,
 )
 from pathlib import Path
 from dagster_dbt import DbtCliResource, DbtProject, dbt_assets
@@ -25,9 +25,9 @@ def dbt_assets(context: dg.AssetExecutionContext, dbt: DbtCliResource):
 
 defs = Definitions(
     assets=[
-        run_load_date_time_app_results,
-        run_load_integer_app_results,
-        run_load_range_app_results,
+        stg_date_time_app_results,
+        stg_integer_app_results,
+        stg_range_app_results,
         dbt_assets,
     ],
     resources={
