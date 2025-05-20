@@ -21,3 +21,5 @@ models:
     staging:
       materialized: table
       +schema: staging
+    data_warehouse:
+      materialized: table
