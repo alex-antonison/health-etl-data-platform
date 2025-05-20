@@ -1,3 +1,0 @@
-source .venv/bin/activate
-export user={add username here}
-export password={add password here}
