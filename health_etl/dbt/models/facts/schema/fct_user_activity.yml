@@ -1,0 +1,21 @@
+version: 2
+models:
+  - name: fct_user_activity
+    description: Fact table for user activity events, referencing content_slug as a foreign key to dim_content.
+    columns:
+      - name: app_result_id
+        description: Unique identifier for the app result event
+      - name: content_slug
+        description: Foreign key to dim_content
+        tests:
+          - relationships:
+              to: ref('dim_content')
+              field: content_slug
+      - name: created_time
+        description: When the result was created
+      - name: modified_time
+        description: When the result was last modified
+      - name: value
+        description: The value of the result, as varchar (could be datetime, integer, or range)
+      - name: user_activity_key
+        description: Surrogate key for the user activity, generated from app_result_id and content_slug

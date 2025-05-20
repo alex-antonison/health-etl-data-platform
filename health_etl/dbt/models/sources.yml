@@ -8,62 +8,71 @@ sources:
       - name: stg_integer_app_results
         meta:
           dagster:
-            asset_key: ['stg_integer_app_results']
-        description: "Integer app results from the application"
+            asset_key: [stg_integer_app_results]
+        description: Integer app results from the application
         columns:
           - name: app_result_id
-            description: "Unique identifier for the app result"
+            description: Unique identifier for the app result
             tests:
               - not_null
               - unique
-          - name: user_id
           - name: content_slug
-            description: "Slug identifying the content"
+            description: Slug identifying the content
           - name: created_time
-            description: "When the record was created"
+            description: When the record was created
           - name: modified_time
-            description: "When the record was last modified"
+            description: When the record was last modified
           - name: value
-            description: "The integer value of the result"
-
+            description: The integer value of the result
+          - name: _dlt_load_id
+            description: ''
+          - name: _dlt_id
+            description: ''
       - name: stg_date_time_app_results
         meta:
           dagster:
-            asset_key: ['stg_date_time_app_results']
-        description: "Datetime app results from the application"
+            asset_key: [stg_date_time_app_results]
+        description: Datetime app results from the application
         columns:
           - name: app_result_id
-            description: "Unique identifier for the app result"
+            description: Unique identifier for the app result
             tests:
               - not_null
               - unique
           - name: content_slug
-            description: "Slug identifying the content"
+            description: Slug identifying the content
           - name: created_time
-            description: "When the record was created"
+            description: When the record was created
           - name: modified_time
-            description: "When the record was last modified"
+            description: When the record was last modified
           - name: value
-            description: "The datetime value of the result"
-
+            description: The datetime value of the result
+          - name: _dlt_load_id
+            description: ''
+          - name: _dlt_id
+            description: ''
       - name: stg_range_app_results
         meta:
           dagster:
-            asset_key: ['stg_range_app_results']
-        description: "Range app results from the application"
+            asset_key: [stg_range_app_results]
+        description: Range app results from the application
         columns:
           - name: app_result_id
-            description: "Unique identifier for the app result"
+            description: Unique identifier for the app result
             tests:
               - not_null
               - unique
           - name: content_slug
-            description: "Slug identifying the content"
+            description: Slug identifying the content
           - name: created_time
-            description: "When the record was created"
+            description: When the record was created
           - name: modified_time
-            description: "When the record was last modified"
+            description: When the record was last modified
           - name: from_value
-            description: "The start value of the range"
+            description: The start value of the range
           - name: to_value
-            description: "The end value of the range"
+            description: The end value of the range
+          - name: _dlt_load_id
+            description: ''
+          - name: _dlt_id
+            description: ''

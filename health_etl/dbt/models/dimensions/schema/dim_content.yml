@@ -1,0 +1,10 @@
+version: 2
+models:
+  - name: dim_content
+    columns:
+      - name: content_slug
+        description: Identifier for activity type
+      - name: content_name
+        description: Human-readable name for the content_slug
+      - name: description
+        description: Description of the content_slug
