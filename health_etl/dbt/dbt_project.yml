@@ -18,8 +18,18 @@ clean-targets:
 
 models:
   health_etl:
+    +dbt-osmosis: "schema/{model}.yml"
     staging:
+      materialized: incremental
+      unique_key: ["user_activity_key"]
+      on_schema_change: append_new_columns
+      schema: staging
+    dimensions:
       materialized: table
-      +schema: staging
-    data_warehouse:
-      materialized: table
+      schema: data_warehouse
+      on_schema_change: append_new_columns
+    facts:
+      materialized: incremental
+      unique_key: ["user_activity_key"]
+      schema: data_warehouse
+      on_schema_change: append_new_columns

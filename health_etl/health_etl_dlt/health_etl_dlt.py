@@ -1,15 +1,20 @@
 import dlt
 from datetime import datetime
-import duckdb
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
 
-def get_duckdb_conn():
-    return duckdb.connect("healthetl_pipeline.duckdb")
+def get_etl_pg_conn():
+    return psycopg2.connect(
+        host=dlt.secrets["destination.postgres.credentials"]["host"],
+        port=dlt.secrets["destination.postgres.credentials"]["port"],
+        database=dlt.secrets["destination.postgres.credentials"]["database"],
+        user=dlt.secrets["destination.postgres.credentials"]["username"],
+        password=dlt.secrets["destination.postgres.credentials"]["password"],
+    )
 
 
-def get_pg_conn():
+def get_app_pg_conn():
     return psycopg2.connect(
         host=dlt.secrets["postgres.app"]["host"],
         port=dlt.secrets["postgres.app"]["port"],
@@ -20,17 +25,16 @@ def get_pg_conn():
 
 
 def get_last_modified_time(table_name):
-    """Get the last modified time from the DuckDB destination"""
-
-    try:
-        duckdb_conn = get_duckdb_conn()
-        result = duckdb_conn.execute(f"""
+    """Get the last modified time from the ETL Postgres destination database"""
+    pg_conn = get_etl_pg_conn()
+    with pg_conn.cursor() as cursor:
+        cursor.execute(f"""
             SELECT MAX(modified_time) as last_modified
-            FROM {table_name}
-        """).fetchone()
-        return result[0] if result and result[0] else datetime.min
-    except Exception:
-        return datetime.min
+            FROM healthetl_data.{table_name}
+        """)
+        result = cursor.fetchone()
+    pg_conn.close()
+    return result[0] if result and result[0] else datetime.min
 
 
 @dlt.resource(
@@ -41,7 +45,7 @@ def get_last_modified_time(table_name):
 def load_integer_app_results():
     print("Loading integer app results")
 
-    pg_conn = get_pg_conn()
+    pg_conn = get_app_pg_conn()
 
     last_modified_time = get_last_modified_time("stg_integer_app_results")
 
@@ -79,7 +83,7 @@ def load_date_time_app_results():
 
     last_modified_time = get_last_modified_time("stg_date_time_app_results")
 
-    pg_conn = get_pg_conn()
+    pg_conn = get_app_pg_conn()
 
     with pg_conn.cursor(cursor_factory=RealDictCursor) as cursor:
         cursor.execute(
@@ -113,7 +117,7 @@ def load_date_time_app_results():
 def load_range_app_results():
     print("Loading range app results")
 
-    pg_conn = get_pg_conn()
+    pg_conn = get_app_pg_conn()
 
     last_modified_time = get_last_modified_time("stg_range_app_results")
 

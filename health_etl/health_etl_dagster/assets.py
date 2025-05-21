@@ -8,7 +8,7 @@ from health_etl_dlt.health_etl_dlt import (
 
 
 @asset
-def stg_date_time_app_results():
+def stg_date_time_app_results(context):
     pipeline = dlt.pipeline(
         pipeline_name="healthetl_pipeline",
         destination="postgres",
@@ -17,11 +17,17 @@ def stg_date_time_app_results():
     )
 
     load_info = pipeline.run(load_date_time_app_results())
+    context.log.info(load_info)
+
+    trace = pipeline.last_trace
+    row_counts = trace.last_normalize_info.row_counts
+    context.log.info(f"Rows loaded: {row_counts}")
+
     return load_info
 
 
 @asset
-def stg_integer_app_results():
+def stg_integer_app_results(context):
     pipeline = dlt.pipeline(
         pipeline_name="healthetl_pipeline",
         destination="postgres",
@@ -30,11 +36,17 @@ def stg_integer_app_results():
     )
 
     load_info = pipeline.run(load_integer_app_results())
+
+    context.log.info(load_info)
+
+    trace = pipeline.last_trace
+    row_counts = trace.last_normalize_info.row_counts
+    context.log.info(f"Rows loaded: {row_counts}")
     return load_info
 
 
 @asset
-def stg_range_app_results():
+def stg_range_app_results(context):
     pipeline = dlt.pipeline(
         pipeline_name="healthetl_pipeline",
         destination="postgres",
@@ -43,4 +55,9 @@ def stg_range_app_results():
     )
 
     load_info = pipeline.run(load_range_app_results())
+    context.log.info(load_info)
+
+    trace = pipeline.last_trace
+    row_counts = trace.last_normalize_info.row_counts
+    context.log.info(f"Rows loaded: {row_counts}")
     return load_info

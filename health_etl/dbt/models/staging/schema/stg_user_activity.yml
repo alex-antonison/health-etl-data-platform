@@ -5,13 +5,15 @@ models:
     contract:
       enforced: true
     description: This model brings together all user activity from the different app results types.
-    data_tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - app_result_id
-            - content_slug
 
     columns:
+      - name: user_activity_key
+        description: Surrogate key for the user activity
+        data_type: character varying
+        tests:
+          - not_null
+          - unique
+
       - name: app_result_id
         description: Unique identifier for the app result
         data_type: bigint
@@ -20,24 +22,30 @@ models:
 
       - name: content_slug
         description: Identifier for activity type
-        data_type: varchar
+        data_type: character varying
         tests:
           - not_null
 
       - name: created_time
         description: When the value was created
-        data_type: TIMESTAMP WITH TIME ZONE
+        data_type: timestamp with time zone
         tests:
           - not_null
 
       - name: modified_time
         description: When the value was last modified
-        data_type: TIMESTAMP WITH TIME ZONE
+        data_type: timestamp with time zone
+        tests:
+          - not_null
+
+      - name: activity_type
+        description: The type of activity
+        data_type: character varying
         tests:
           - not_null
 
       - name: value
         description: This column represents either a datetime, integer, or range value
-        data_type: varchar
+        data_type: character varying
         tests:
           - not_null
