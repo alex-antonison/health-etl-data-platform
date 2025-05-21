@@ -29,7 +29,7 @@ def get_last_modified_time(table_name):
     pg_conn = get_etl_pg_conn()
     with pg_conn.cursor() as cursor:
         cursor.execute(f"""
-            SELECT MAX(modified_time at time zone 'utc') as last_modified
+            SELECT MAX(modified_time) as last_modified
             FROM healthetl_data.{table_name}
         """)
         result = cursor.fetchone()
