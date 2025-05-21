@@ -104,7 +104,7 @@ As source tables and models evolve over time, the data contracts between the Hea
 ### Orchestration Tool
 
 * [Dagster](https://dagster.io) is a popular Orchestration tool in the Data Engineering world as it was the first orchestration tool to take a different approach to orchestrating data pipelines where it is "data-asset-centric." Combine with that the close integration with dbt, it is a great Orchestration option. It supports fully managed, hybrid, and self-hosting options. The fully-managed approach will not work for HealthETL based on the sensitivity of our data, however the hybrid option is viable as no data would leave the HealthETL environment. Lastly, the open source option is still viable but there is a developer cost to standing it up and running it internally.
-  * [airflow](https://airflow.apache.org) is the dominant Orchestrator tool across the industry. And while even in the recent version it adopted the concept of assets and can be extended to support dbt, dagster is built around the concept of data assets, natively supports dbt, and provides a better local development experience to Airflow which are all key deciding factors for the HealthETL team.
+  * [Airflow](https://airflow.apache.org) is the dominant Orchestrator tool across the industry. And while even in the recent version it adopted the concept of assets and can be extended to support dbt, dagster is built around the concept of data assets, natively supports dbt, and provides a better local development experience to Airflow which are all key deciding factors for the HealthETL team.
 
 ### Cloud Data Warehouse
 
